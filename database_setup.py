@@ -47,17 +47,18 @@ class Item(Base):
   """
   The table (item) contains a list of book catalogs.
 
-     id   |  name   | description | picture | catalog_id | user_id
+     id   |  name   | author | description | picture | catalog_id | user_id
   ---------------------------------------------------------------------
-     1    | title 1 |             |         |    3       |  1
-     2    | title 2 |             |         |    2       |  1
-     3    | title 3 |             |         |    5       |  1
+     1    | title 1 |        |             |         |    3       |  1
+     2    | title 2 |        |             |         |    2       |  1
+     3    | title 3 |        |             |         |    5       |  1
 
   """
-  __tablename__ = 'menu_item'
+  __tablename__ = 'item'
   name = Column(String(80), nullable=False)
   id = Column(Integer, primary_key=True)
   description = Column(String(250))
+  author = Column(String(250))
   picture = Column(String(250))
   catalog_id = Column(Integer, ForeignKey('catalog.id'))
   catalog = relationship(Catalog)
