@@ -1,0 +1,15 @@
+<img class=cover-image src="{{item.picture}}">
+<p>
+<i>by {{item.author}} </i>
+</p>
+<p>
+{{item.description}}
+</p>
+
+<div class="user-control">
+<a href="{{url_for('edit_item', item_name=item_.name_no_space)}}">Edit</a>   
+</div>
+
+<div class="user-control">
+<a href="{{url_for('delete_item', item_name=item_.name_no_space)}}">Delete</a>
+</div>

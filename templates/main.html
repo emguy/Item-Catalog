@@ -2,18 +2,29 @@
 {% block content %}
 <html lang="en">
   <head>
-  {% include "head.html" %}
+    <title> Book Catalog </title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css')}}">
   </head>
 	<body>
     <div id="page">
       <div id="center"> 
         <div id="side-panel">
           {% include "show_catalogs.html" %}
+          <a href="{{url_for('new_item')}}">add a new item</a>
         </div>
         <div id="main-panel">
-          <a href="{{url_for('new_item')}}">add a new item</a>
-          <h3>{{heading}}</h3>
-          {% include "show_items.html" %}
+          <h3> {{heading}} </h3>
+          {% if task == "show_items" %}
+            {% include "show_items.html" %}
+          {% elif task == "show_new" %}
+            {% include "show_new.html" %}
+          {% elif task == "show_edit" %}
+            {% include "show_edit.html" %}
+          {% elif task == "show_delete" %}
+            {% include "show_delete.html" %}
+          {% elif task == "show_info" %}
+            {% include "show_info.html" %}
+          {% endif %}
         </div>
       </div>
 		</div>
