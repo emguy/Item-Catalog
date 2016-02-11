@@ -6,13 +6,19 @@
     {% include "head.html" %}
 	</head>
 	<body>
-		<div class="catalogs">
-      {% include "show_catalogs.html" %}
-		</div>
-		<div class="main_panel">
-      <h3>{{heading}}</h3>
-      {% include "show_iteminfo.html" %}
-		</div>
+    <div id="page">
+      <div id="center">
+        <div id="side-panel">
+          {% include "show_catalogs.html" %}
+        </div>
+        <div id="main-panel">
+          {% include "show_iteminfo.html" %}
+        <div id="user-control">
+          <a href="{{url_for('edit_item', item_name=item_.name_no_space)}}">Edit</a>
+        </div>
+        </div>
+      </div>
+    </div>
 	</body>
 </html>
 {% endblock content %}

@@ -5,13 +5,17 @@
   {% include "head.html" %}
   </head>
 	<body>
-		<div class="catalogs">
-      {% include "show_catalogs.html" %}
-		</div>
-		<div class="main_panel">
-      <a href="{{url_for('new_item')}}">add a new item</a>
-      <h3>{{heading}}</h3>
-      {% include "show_items.html" %}
+    <div id="page">
+      <div id="center"> 
+        <div id="side-panel">
+          {% include "show_catalogs.html" %}
+        </div>
+        <div id="main-panel">
+          <a href="{{url_for('new_item')}}">add a new item</a>
+          <h3>{{heading}}</h3>
+          {% include "show_items.html" %}
+        </div>
+      </div>
 		</div>
 	</body>
 </html>

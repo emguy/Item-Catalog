@@ -1,0 +1,36 @@
+.ui-input {
+  padding-bottom: 20px;
+}
+
+.form-control {
+  width: 800px;
+}
+
+#page {
+  margin: auto;
+  width: 900px;
+  border: 1px solid #222222;
+  min-height: 800px;
+}
+
+#side-panel {
+  padding: 10px;
+  width: 200px;
+  float: left;
+}
+
+#main-panel {
+  padding: 10px;
+  width: 600px;
+  float: left;
+  text-align: justify;
+}
+.form-group {
+  padding: 20px;
+}
+
+.cover-image {
+  margin: 20px;
+  float: left;
+  width: 160px;
+}

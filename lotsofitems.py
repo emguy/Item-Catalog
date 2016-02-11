@@ -109,5 +109,7 @@ _catalog_id = 4
 item = Item(user_id=_user_id, name=_name, author=_author, description=_description, picture=_picture, catalog_id=_catalog_id)
 db_session.add(item)
 
+
+
 db_session.commit()
 print "Titles are added!"
