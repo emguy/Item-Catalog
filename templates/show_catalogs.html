@@ -1,5 +1,5 @@
 <ul>
   {% for cat in cats %}
-    <li><a href='#'>{{cat.name}}</a></li>
+    <li><a href="{{url_for('show_items', catalog_name=cat.name)}}">{{cat.name}}</a></li>
   {% endfor %}
 </ul>

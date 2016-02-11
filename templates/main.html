@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+{% block content %}
+<html lang="en">
+  <head>
+  {% include "head.html" %}
+  </head>
+	<body>
+		<div class="catalogs">
+      {% include "show_catalogs.html" %}
+		</div>
+		<div class="main_panel">
+      <a href="{{url_for('new_item')}}">add a new item</a>
+      <h3>{{heading}}</h3>
+      {% include "show_items.html" %}
+		</div>
+	</body>
+</html>
+{% endblock content %}

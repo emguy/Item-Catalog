@@ -1,5 +1,7 @@
 <ul>
 {% for item in items %}
-  <li><a href='#'>{{item.name}}</a></li>
+  <li><a href="{{url_for('show_iteminfo', catalog_name=item.catalog_name, item_name=item.name_no_space)}}">
+    {{item.name}}  </a> ({{item.catalog_name}})
+</li>
 {% endfor %}
 </ul>

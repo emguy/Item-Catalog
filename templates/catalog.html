@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+{% block content %}
+<html lang="en">
+	<head>
+    {% include "header.html" %}
+	</head>
+	<body>
+		<div class="catalogs">
+      {% include "show_catalogs.html" %}
+		</div>
+		<div class="main_panel">
+      <h3>{{heading}}</h3>
+      {% include "show_items.html" %}
+		</div>
+	</body>
+</html>
+{% endblock content %}
