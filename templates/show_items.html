@@ -1,8 +1,7 @@
 {% for item in items %}
 <div class=cell>
-  <a href="{{url_for('show_iteminfo', catalog_name=item.catalog_name, item_name=item.name_no_space)}}">
-  <img src="{{item.picture}}" height=220></a> 
-  <a class="title" href="{{url_for('show_iteminfo', catalog_name=item.catalog_name, item_name=item.name_no_space)}}">
+  <a class="title" href="{{url_for('show_iteminfo', catalog_name=item.catalog_name, item_name=item.name)}}">
+  <img src="{{item.picture}}" height=220>
   <p class="title">{{item.name}}</a></p> ({{item.catalog_name}})
 </div>
 {% endfor %}

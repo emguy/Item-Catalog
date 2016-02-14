@@ -45,9 +45,15 @@ def show_login():
   cats = db_session.query(Catalog).order_by(Catalog.name).all()
   return render_template("main.html", task="show_login", cats=cats, STATE=login_session["state"])
 
-# this url is for user authentication
 @app.route("/gconnect", methods=["POST"])
 def gconnect():
+  """ 
+  this method handles user authentication.
+  
+  Returns:
+    a JSON object with proper error message if the authentication is
+    unsuccessful.
+  """
   # step 1 - validate state token (here 'state' is passed as a url argument)
   if request.args.get("state") != login_session["state"]:
     response = make_response(json.dumps("Invalid state parameter."), 401)
@@ -129,6 +135,13 @@ def gconnect():
 
 @app.route("/gdisconnect")
 def gdisconnect():
+  """
+  This method handle the user logout event.
+
+  Returns:
+    a JSON object with proper error message if this process is
+    unsuccessful.
+  """
   # only disconnect a connected user
   print(login_session)
   credentials = login_session.get("access_token")
@@ -158,6 +171,12 @@ def gdisconnect():
 # this is the JSON endpoint
 @app.route("/catalog.json")
 def get_json():
+  """
+  This is the required json endpoint.
+
+  Returns:
+    a JSON object containing all item information.
+  """
   cats = db_session.query(Catalog).order_by(Catalog.name).all()
   out = [cat.serialize for cat in cats]
   for entry in out:
@@ -166,45 +185,96 @@ def get_json():
     entry["items"] = [i.serialize for i in items]
   return jsonify(Catalog=out)
 
-# this is the endpoint for the root URL
 @app.route("/")
 def show_main():
+  """
+  This is the home page. It lists recently added items.
+  """
   cats = db_session.query(Catalog).order_by(Catalog.name).all()
   items = db_session.query(Item).order_by(desc(Item.time_stamp)).limit(12)
-  items_ = [get_item_info(item) for item in items]
-  heading = "Latest Items"
+  items_with_catagory = [get_item_info(item) for item in items]
+  heading = "Latest Items" 
   is_loggedin = "username" in login_session
-  return render_template("main.html", task="show_items", cats=cats, items=items_, heading=heading, is_loggedin=is_loggedin)
+  return render_template("main.html", task="show_items", cats=cats, 
+      items=items_with_catagory, heading=heading, is_loggedin=is_loggedin)
 
 @app.route("/catalog/<catalog_name>/items")
 def show_items_by_catalog(catalog_name):
+  """
+  This page displays all items of the specified catalory.
+
+  Returns:
+    a JSON object with proper error message if the url contains
+    bad data.
+  """
   cats = db_session.query(Catalog).order_by(Catalog.name).all() 
-  cat = db_session.query(Catalog).filter_by(name = catalog_name).one()
-  items = db_session.query(Item).filter_by(catalog_id = cat.id).order_by(Item.name).all()
-  items_ = [get_item_info(item) for item in items]
+  # check if the specified catalog_name is valid
+  try:
+    cat = db_session.query(Catalog).filter_by(name = catalog_name).one()
+  except:
+    response = make_response(
+      json.dumps("Invalid catalog name %s." % catalog_name), 401)
+    response.headers["Content-Type"] = "application/json"
+    return response
+  items = db_session.query(Item).filter_by(catalog_id=cat.id).order_by(Item.name).all()
+  items_with_catagory = [get_item_info(item) for item in items]
   heading = cat.name + "  (%d items)" % len(items)
   is_loggedin = "username" in login_session
-  return render_template("main.html", task="show_items", cats=cats, items=items_, heading=heading, is_loggedin=is_loggedin)
+  return render_template("main.html", task="show_items", cats=cats, 
+      items=items_with_catagory, heading=heading, is_loggedin=is_loggedin)
 
 @app.route("/item/catalog/<catalog_name>/<item_name>")
 def show_iteminfo(catalog_name, item_name):
-  item_name = item_name.replace("%20", u" ")
+  """
+  This page shows the description of the specified item.
+
+  Returns:
+    a JSON object with proper error message if the url contains
+    bad data.
+  """
   cats = db_session.query(Catalog).order_by(Catalog.name).all() 
-  cat = db_session.query(Catalog).filter_by(name = catalog_name).one()
-  item = db_session.query(Item).filter_by(name=item_name).one()
-  item_ = get_item_info(item) # this is for replaciing spaces in urls with %20
+  # check if the specified catalog_name is valid
+  try:
+    cat = db_session.query(Catalog).filter_by(name = catalog_name).one()
+  except:
+    response = make_response(
+      json.dumps("Invalid catalog name."), 401)
+    response.headers["Content-Type"] = "application/json"
+    return response
+  # check if the specified item_name is in the catalog
+  try:
+    item = db_session.query(Item).filter_by(catalog_id=cat.id).filter_by(name=item_name).one()
+  except:
+    response = make_response(
+      json.dumps("The item %s is not in the catalog %s." % (item_name, catalog_name)), 401)
+    response.headers["Content-Type"] = "application/json"
+    return response
   heading = item.name
   is_loggedin = "username" in login_session
   is_owner = is_loggedin and login_session["email"] == get_item_owner(item).email
-  return render_template("main.html", task="show_info", cats=cats, item=item, item_=item_, heading=heading, is_loggedin=is_loggedin, is_owner=is_owner)
+  return render_template("main.html", task="show_info", cats=cats, item=item, 
+      heading=heading, is_loggedin=is_loggedin, is_owner=is_owner)
 
 @app.route("/new", methods=["GET", "POST"])
 def add_item():
+  """
+  This page shows input forms which allow registered users to add new items.
+
+  Returns:
+    a JSON object with proper error message if this process does not go through.
+  """
   is_loggedin = "email" in login_session
   if not is_loggedin:
     return redirect(url_for("show_login"))
   if request.method == "POST":
     name = request.form["title"].strip(" ")
+    # check if it is a valid item name
+    if name == "":
+      response = make_response(
+        json.dumps("Invalid item name %s." % item_name), 401)
+      response.headers["Content-Type"] = "application/json"
+      return response
+    # insert a new record into the database:w
     description = request.form["description"].strip(" ")
     author = request.form["author"].strip(" ")
     catalog_id = request.form["catalog"].strip(" ")
@@ -218,15 +288,30 @@ def add_item():
   else:
     cats = db_session.query(Catalog).order_by(Catalog.name).all() 
     heading="Add a new item"
-    return render_template("main.html", cats=cats, task="show_new", heading=heading, is_loggedin=is_loggedin)
+    return render_template("main.html", cats=cats, task="show_new", heading=heading, 
+        is_loggedin=is_loggedin)
 
-@app.route("/item/catalog/catalog/<item_name>/edit", methods=["GET", "POST"])
+@app.route("/item/catalog/<item_name>/edit", methods=["GET", "POST"])
 def edit_item(item_name):
+  """
+  This page shows input forms which allow registered users to modify an item.
+
+  Returns:
+    a JSON object with proper error message if this process does not go through.
+  """
+  # check if the user is logged in
   is_loggedin = "email" in login_session
   if not is_loggedin:
     return redirect(url_for("show_login"))
-  item_name = item_name.replace("%20", " ")
-  item = db_session.query(Item).filter_by(name=item_name).one()
+  # check if the item is exist
+  try:
+    item = db_session.query(Item).filter_by(name=item_name).one()
+  except:
+    response = make_response(
+      json.dumps("The item %s is unavailable." % (item_name)), 401)
+    response.headers["Content-Type"] = "application/json"
+    return response
+  # check if the user is the owner of this item
   if login_session["email"] != get_item_owner(item).email:
     response = make_response(json.dumps("You are not authorized to modify this item."), 401)
     response.headers["Content-Type"] = "application/json"
@@ -237,6 +322,13 @@ def edit_item(item_name):
     author = request.form["author"].strip(" ")
     catalog_id = request.form["catalog"].strip(" ")
     picture = request.form["picture"].strip(" ")
+    # check if it is a valid item name
+    if name == "":
+      response = make_response(
+        json.dumps("Invalid item name %s." % item_name), 401)
+      response.headers["Content-Type"] = "application/json"
+      return response
+    # update the record in the database with new values
     item.name = name
     item.description = description
     item.author = author
@@ -247,6 +339,7 @@ def edit_item(item_name):
     db_session.commit()
     return redirect(url_for("show_main"))
   else:
+    # we initiate the input forms using the values in the database
     name = item.name
     description = item.description
     author = item.author
@@ -255,42 +348,54 @@ def edit_item(item_name):
     cats  = db_session.query(Catalog).order_by(Catalog.name).all() 
     heading="Edit the title"
     is_loggedin = "username" in login_session
-    return render_template("main.html", task="show_edit", cats=cats, name=name, catalog_id=catalog_id,
-            description=description, author=author, picture=picture, heading=heading, is_loggedin=is_loggedin)
+    return render_template("main.html", task="show_edit", cats=cats, name=name, 
+        catalog_id=catalog_id, description=description, author=author, 
+        picture=picture, heading=heading, is_loggedin=is_loggedin)
 
 @app.route("/catalog/<item_name>/delete", methods=["GET", "POST"])
+  """
+  This page shows deletion comfirmation about deleting an item from the database.
+
+  Returns:
+    a JSON object with proper error message if this process does not go through.
+  """
 def delete_item(item_name):
   is_loggedin = "email" in login_session
+  # check if the user is logged in
   if not is_loggedin:
     return redirect(url_for("show_login"))
-  item_name = item_name.replace("%20", " ")
-  item = db_session.query(Item).filter_by(name=item_name).one()
+  # check if the item is exist
+  try:
+    item = db_session.query(Item).filter_by(name=item_name).one()
+  except:
+    response = make_response(
+      json.dumps("The item %s is unavailable." % (item_name)), 401)
+    response.headers["Content-Type"] = "application/json"
+    return response
   if login_session["email"] != get_item_owner(item).email:
+  # check if the user is the owner of this item
     response = make_response(json.dumps("You are not authorized to modify this item."), 401)
     response.headers["Content-Type"] = "application/json"
     return response
   if request.method == "POST":
+    # delete the respective record in the database
     db_session.delete(item)
     db_session.commit()
     return redirect(url_for("show_main"))
   else:
     cats  = db_session.query(Catalog).order_by(Catalog.name).all() 
     heading="Are you sure you want to delete \"%s\" ?" % item.name
-    return render_template("main.html", task="show_delete", cats=cats, item=item, heading=heading, is_loggedin=is_loggedin)
-
-
-
-
-
-
-
-
-
-
-
+    return render_template("main.html", task="show_delete", cats=cats, item=item, 
+        heading=heading, is_loggedin=is_loggedin)
 
 # Some Helper Functions
 def create_user(login_session):
+  """
+  Insert a new user in the database
+
+  Returns:
+    The id of the new user.
+  """
   new_user = User(name=login_session["username"], email=login_session["email"])
   db_session.add(new_user)
   db_session.commit()
@@ -298,10 +403,28 @@ def create_user(login_session):
   return user.id
 
 def get_user_info(user_id):
+  """
+    Get the user object.
+
+    Args:
+      user_id (int): the id of the user.
+
+    Returns:
+      The user object.
+  """
   user = db_session.query(User).filter_by(id=user_id).one()
   return user
 
 def get_user_id(email):
+  """
+    Get the user id.
+
+    Args:
+      email (string): the email address of the user.
+
+    Returns:
+      The user id if the user exsits.
+  """
   try:
     user = db_session.query(User).filter_by(email=email).one()
     return user.id
@@ -309,36 +432,48 @@ def get_user_id(email):
     return None
 
 def get_item_owner(item):
+  """
+    Get the owner of an item.
+
+    Args:
+      item (Item): the item object.
+
+    Returns:
+      The owner of the item.
+  """
   owner = db_session.query(User).filter_by(id=item.user_id).one()
   return owner
 
+def get_item_catalog(item):
+  """
+    Get the catalog of an item.
+
+    Args:
+      item (Item): the item object.
+
+    Returns:
+      The cotalog of the item.
+  """
+  cat = db_session.query(Catalog).filter_by(id=item.catalog_id).one()
+  return cat
+
 def get_item_info(item):
   """
-  Add two fields---"catalog_name" and "name_no_space" to the item. "name_no_space"
-  replaces spaces in the generated URL with "\%20".
+    Get the information about the item.
 
+    Args:
+      item (Item): the item object.
+
+    Returns:
+      a dict contains the assciated infomation about the item including 
+      its catalog.
   """
   out = {}
-  cat = db_session.query(Catalog).filter_by(id=item.catalog_id).one()
+  cat = get_item_catalog(item)
   out["name"] = item.name
-  out["name_no_space"] = item.name.replace(" ", "%20")
   out["catalog_name"] = cat.name
   out["picture"] = item.picture
   return out
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == "__main__":
   app.secret_key = "super_secret_key"
