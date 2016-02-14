@@ -3,34 +3,126 @@
 }
 
 .form-control {
-  width: 800px;
+  width: 500px;
 }
 
 #page {
   margin: auto;
   width: 900px;
   border: 1px solid #222222;
-  min-height: 800px;
+  min-height: 1000px;
+}
+
+#header {
+  height: 160px;
+  background-color: #D9E1F2;
 }
 
 #side-panel {
   padding: 10px;
-  width: 200px;
+  padding-left: 20px;
+  margin: 0px;
   float: left;
+  background-color: #EEEEEE;
+  width: 200px;
+  height: 300px;
+  //line-height: 30px;
 }
 
 #main-panel {
   padding: 10px;
+  padding-left: 30px;
   width: 600px;
   float: left;
   text-align: justify;
 }
+
+#footer {
+  margin: auto;
+  font-size: 80%;
+  text-align: center;
+}
+
+.cell {
+  width: 200px;
+  height: 280px;
+  margin: 0px;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  padding-top: 10px;
+  float: left;
+  text-align: center;
+  cursor: pointer;
+  background-color: #FFFFFF;
+}
+
+.cell:hover {
+  background-color: #D9E1F2;
+}
+
 .form-group {
   padding: 20px;
 }
 
-.cover-image {
-  margin: 20px;
-  float: left;
-  width: 160px;
+.side-ui {
+  height: 25px;
+  padding-left: 5px;
 }
+
+.cover-image {
+  margin-left: 20px;
+  margin-right: 0px;
+  float: right;
+  height: 220px;
+}
+
+a {
+  color: #226633;
+}
+
+a.title {
+  color: #226633;
+  text-decoration: none;
+}
+
+p.title {
+  margin: 0px;
+  margin-bottom: 5px;
+}
+
+h3 {
+  color: #246392;
+  //font-family: sans-serif;
+}
+
+h1 {
+  color: #246392;
+  font-family: sans-serif;
+  margin: 0px;
+  padding-top: 100px;
+  padding-left: 20px;
+}
+
+.user-control {
+  margin-right: 20px;
+  float: right;
+}
+
+#login-box{
+  padding-top:50px;
+  margin: auto;
+  text-align: center;
+}
+
+#side-panel {
+    padding-bottom: 99999px;
+    margin-bottom: -99999px;
+}
+#main-panel {
+    padding-bottom: 99999px;
+    margin-bottom: -99999px;
+}
+#page {
+  overflow: hidden;
+}
+
