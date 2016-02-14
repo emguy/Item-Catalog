@@ -1,0 +1,53 @@
+<!--LOAD PRE-REQUISITES FOR GOOGLE SIGN IN -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"> </script>
+<script src="//apis.google.com/js/platform.js?onload=start"> </script>
+<script>
+function sign_in_callback(authResult) {
+  if (authResult["code"]) {
+    // Hide the sign-in button now that the user is authorized
+    $("#signinButton").attr("style", "display: none");
+    // Send the one-time-use code to the server, if the server responds, 
+    // write a 'login successful' message to the
+    $.ajax({
+      type: "POST",
+      url: "/gconnect?state={{STATE}}",
+      processData: false,
+      data: authResult["code"],
+      contentType: "application/octet-stream; charset=utf-8",
+      success: 
+        function(result) {
+          // Handle or verify the server response if necessary.
+          if (result) {
+            $("#login-box").html("Login Successful!</br><h3>" + result + "</h3></br>Redirecting...");
+            setTimeout(function() { window.location.href = "{{ url_for('show_main') }}"; }, 4000);
+          } else if (authResult["error"]) {
+            console.log("There was an error: " + authResult["error"]);
+          } else {
+            $("#login-box").html("Failed to make a server-side call. Check your configuration and console.");
+          }
+        },
+      error: 
+        function(result) {
+          console.log("There was an error: " + result);
+        }
+    }); // end ajax 
+  } // end if
+} //end function
+</script>
+<!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
+
+<!-- GOOGLE PLUS SIGN IN-->
+<div id="login-box">
+  <p>Click to sign in with your google account</p>
+  <span class="g-signin"
+    data-scope="openid email"
+    data-clientid="538647391074-9i907v4f38n8506m7sk119fk671i4kmc.apps.googleusercontent.com"
+    data-redirecturi="postmessage"
+    data-accesstype="offline"
+    data-cookiepolicy="single_host_origin"
+    data-callback="sign_in_callback"
+    data-approvalprompt="force">
+  </span>
+</div>
+<!--END GOOGLE PLUS SIGN IN -->
+

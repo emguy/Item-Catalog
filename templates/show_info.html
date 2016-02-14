@@ -1,15 +1,19 @@
 <p>
 <i>by {{item.author}} </i>
-<span class="user-control">
-<a href="{{url_for('edit_item', item_name=item_.name_no_space)}}">Edit</a>   
-</span>
-<span class="user-control">
-<a href="{{url_for('delete_item', item_name=item_.name_no_space)}}">Delete</a>
-</span>
 </p>
 <img class=cover-image src="{{item.picture}}">
 <p>
 {{item.description}}
 </p>
 
-
+{% if is_loggedin and is_owner %}
+<p>
+<span class="item-control">
+<a href="{{url_for('edit_item', item_name=item_.name_no_space)}}">Edit</a>   
+</span>
+&nbsp;
+<span class="item-control">
+<a href="{{url_for('delete_item', item_name=item_.name_no_space)}}">Delete</a>
+</span>
+</p>
+{% endif %}

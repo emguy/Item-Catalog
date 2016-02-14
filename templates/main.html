@@ -2,16 +2,23 @@
 {% block content %}
 <html lang="en">
   <head>
-    {% include "head.html" %}
+    <title>Item Catalog</title>
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css')}}">
   </head>
 	<body>
     <div id="page">
+      <div id="header">
+        {% include "show_header.html" %} 
+      </div> {# end header #}
       <div id="center"> 
         <div id="side-panel">
           {% include "show_catalogs.html" %}
-        </div>
+        </div> {# end side-panel #}
         <div id="main-panel">
-          {% if task == "show_items" %}
+          <h3> {{heading}} </h3>
+          {% if task == "show_login" %}
+            {% include "show_login.html" %}
+          {% elif task == "show_items" %}
             {% include "show_items.html" %}
           {% elif task == "show_new" %}
             {% include "show_new.html" %}
@@ -22,9 +29,12 @@
           {% elif task == "show_info" %}
             {% include "show_info.html" %}
           {% endif %}
-        </div>
-      </div>
-		</div>
+        </div> {# end main-panel #}
+      </div> {# end center #}
+		</div> {# end page #}
+    <div id="footer">
+      Created by Yu Zhang 2016
+    </div> {# end footer #}
 	</body>
 </html>
 {% endblock content %}

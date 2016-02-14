@@ -1,7 +1,10 @@
-<ul>
-    <li><a href="{{url_for('show_main')}}">Home</a></li>
-    <br>
-  {% for cat in cats %}
-    <li><a href="{{url_for('show_items_by_catalog', catalog_name=cat.name)}}">{{cat.name}}</a></li>
-  {% endfor %}
-</ul>
+<h3> Catagories </h3>
+
+{% for cat in cats %}
+<div class="side-ui">
+  <a href="{{url_for('show_items_by_catalog', catalog_name=cat.name)}}">
+    {{cat.name}}
+  </a>
+</div>
+{% endfor %}
+

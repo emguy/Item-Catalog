@@ -1,0 +1,28 @@
+<div id="title">
+  <a class="title" href="{{url_for('show_main')}}">
+  <h1>Item Catalog App</h1>
+  </a>
+</div>
+
+{% if task == "show_login" %}
+  <!-- DISPLAY NOTHING -->
+{% elif is_loggedin %}
+  <div class="user-control">
+  <a href="{{url_for('add_item')}}">
+  New item
+  </a>
+  </div>
+
+  <div class="user-control">
+  <a href="{{url_for('gdisconnect')}}">
+  Logout
+  </a>
+  </div>
+{% else %}
+  <div class="user-control">
+    <a href="{{url_for('show_login')}}">
+    Login
+    </a>
+  </div>
+{% endif %}
+
