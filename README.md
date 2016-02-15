@@ -6,6 +6,7 @@ side.
 
 # Requirements
 You need SQLite library and a python 2.x interpretor with the following modules:
+
 1. [sqlalchemy](http://www.sqlalchemy.org)
 2. [Flask](http://flask.pocoo.org)
 3. [oauth2client](https://github.com/google/oauth2client)
