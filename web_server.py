@@ -14,7 +14,7 @@ from database_setup import Base, Catalog, User,Item
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 
-# some standard python modules
+# some other python modules
 import httplib2
 import json
 import random
@@ -164,8 +164,8 @@ def gdisconnect():
   else:
     # For whatever reason, the given token was invalid.
     response = make_response(
-        json.dumps('Failed to revoke token for given user.', 400))
-    response.headers['Content-Type'] = 'application/json'
+        json.dumps("Failed to revoke token for given user.", 400))
+    response.headers["Content-Type"] = "application/json"
     return response
 
 # this is the JSON endpoint
@@ -478,5 +478,5 @@ def get_item_info(item):
 if __name__ == "__main__":
   app.secret_key = "super_secret_key"
   app.debug = True
-  app.run(host="0.0.0.0", port=8080)
+  app.run(host="0.0.0.0", port=5000)
 
