@@ -353,13 +353,13 @@ def edit_item(item_name):
         picture=picture, heading=heading, is_loggedin=is_loggedin)
 
 @app.route("/catalog/<item_name>/delete", methods=["GET", "POST"])
+def delete_item(item_name):
   """
   This page shows deletion comfirmation about deleting an item from the database.
 
   Returns:
     a JSON object with proper error message if this process does not go through.
   """
-def delete_item(item_name):
   is_loggedin = "email" in login_session
   # check if the user is logged in
   if not is_loggedin:
