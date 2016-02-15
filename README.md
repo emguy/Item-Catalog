@@ -67,7 +67,7 @@ To preload the database with sample items, execute the following command
   python lotsofitems.py
 
 ```
-On the client side, the web server is settled at
+The web server is settled at
 ```
   http://localhost:5000
 ```
