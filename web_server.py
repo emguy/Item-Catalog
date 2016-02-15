@@ -39,6 +39,10 @@ CLIENT_ID = json.loads(open("client_secrets.json", 'r').read())["web"]["client_i
 # create anti-forgry state tocken
 @app.route("/login")
 def show_login():
+  """
+  This method generates anti-forgry state tocken and display the interface for
+  user login.
+  """
   # generate a random text with length=32
   login_session["state"] = "".join(
        random.choice(string.ascii_uppercase + string.digits) for x in range(32))
