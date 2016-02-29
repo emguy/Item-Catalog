@@ -17,7 +17,7 @@ class User(Base):
      3    | user_3 | 
 
   """
-  __tablename__ = 'user'
+  __tablename__ = 'catalog_users'
   id = Column(Integer, primary_key=True)
   name = Column(String(250), nullable=False)
   email = Column(String(250), nullable=False)
@@ -33,7 +33,7 @@ class Catalog(Base):
      3    | kids
 
   """
-  __tablename__ = 'catalog'
+  __tablename__ = 'catalogs'
   id = Column(Integer, primary_key=True)
   name = Column(String(250), nullable=False)
   @property
@@ -55,16 +55,16 @@ class Item(Base):
      3    | title 3 |        |             |         |            |    5       |  1
 
   """
-  __tablename__ = 'item'
-  name = Column(String(80), nullable=False)
+  __tablename__ = 'items'
+  name = Column(String(250), nullable=False)
   id = Column(Integer, primary_key=True)
   description = Column(Text())
   author = Column(String(250))
   picture = Column(String(250))
   time_stamp = Column(DateTime(timezone=False), default=func.now())
-  catalog_id = Column(Integer, ForeignKey('catalog.id'))
+  catalog_id = Column(Integer, ForeignKey('catalogs.id'))
   catalog = relationship(Catalog)
-  user_id = Column(Integer, ForeignKey('user.id'))
+  user_id = Column(Integer, ForeignKey('catalog_users.id'))
   user = relationship(User)
   @property
   def serialize(self):
@@ -75,5 +75,5 @@ class Item(Base):
       'id': self.id,
     }
 
-engine = create_engine('sqlite:///items.db')
+engine = create_engine('postgresql+psycopg2://catalog:123456@localhost/db_catalog')
 Base.metadata.create_all(engine)
